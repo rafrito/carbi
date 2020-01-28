@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
 	fmt.Println("Iniciando servidor carbi...")
-	SenhaMYSQL()
+	// SenhaMYSQL()
+	os.Setenv("SMYSQL", "rafs1793")
 
 	db, err := sql.Open("mysql", OrigemDados("carbi"))
 	if err != nil {
