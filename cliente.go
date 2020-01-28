@@ -36,8 +36,8 @@ func (s *server) api(w http.ResponseWriter, r *http.Request) {
 		delete(w, r, s.db)
 	case "PUT":
 		put(w, r, s.db)
-	case "PUSH":
-		push(w, r, s.db)
+	case "POST":
+		post(w, r, s.db)
 	default:
 		badRequest(w)
 	}
@@ -108,7 +108,7 @@ func put(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 }
 
 // Coloca novo elemento numa tabela
-func push(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+func post(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	tab := strings.Split(r.URL.Path, "/")
 	switch len(tab) {
 	case 4:
@@ -119,7 +119,7 @@ func push(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			m[col] = data[i]
 		}
 		err := InsereDado(db, "Estoque", m)
-		err = Registra(db, "PUSH", r.URL.Path)
+		err = Registra(db, "POST", r.URL.Path)
 		if err != nil {
 			badRequest(w)
 		} else {

@@ -6,7 +6,7 @@ Os programas estão feitos em golang e dependem de um servidor mysql e o drive e
 
 - A request GET consulta o Estoque e Histórico.
 - PUT atualiza os atributos de um carro (Ano, Cor, Carro, Preço).
-- PUSH adiciona um carro ao Estoque.
+- POST adiciona um carro ao Estoque.
 - DELETE deleta um carro do Estoque - podendo representar uma venda, por exemplo.
 
 ## Sumário do uso dos métodos
@@ -34,16 +34,16 @@ exemplo:
 curl -X PUT localhost:8080/5/Cor,Ano/Amarela,2001/  
 altera o carro 5
 
-### PUSH
+### POST
 - /{col1,col2...}/{lin1,lin2...}
 
 exemplo:  
-curl -X PUSH localhost:8080/5/Cor,Ano,Carro,Preço/Amarela,2001,Mustang-GT,130000.0/  
+curl -X POST localhost:8080/5/Cor,Ano,Carro,Preço/Amarela,2001,Mustang-GT,130000.0/  
 
 ### DELETE
 - /{ID}/  
 Deleta o carro com ID passado.
 
-As requisições DELETE, PUT e PUSH são adicionadas ao histórico sempre que feitas. Afinal, uma empresa quer ter histórico de seus pedidos.
+As requisições DELETE, PUT e POST são adicionadas ao histórico sempre que feitas. Afinal, uma empresa quer ter histórico de seus pedidos.
 
 Isso é tudo, pessoal. Ficou bem simples, mas foi com carinho.
