@@ -2,11 +2,19 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"os"
 	"testing"
 
 	_ "github.com/go-sql-driver/mysql"
 )
+
+type Estoque struct {
+	Carro string
+	Cor   string
+	Ano   string
+	Preço string
+}
 
 func TestCriaBanco(t *testing.T) {
 	os.Setenv("SMYSQL", "rafs1793")
@@ -61,34 +69,19 @@ func TestInsereColuna(t *testing.T) {
 }
 
 func TestInsereDado(t *testing.T) {
-	m := make([]map[string]string, 0, 4)
-	m1 := map[string]string{
-		"Carro": "Ferrari F-200",
-		"Cor":   "Vermelha",
-		"Ano":   "2001",
-		"Preço": "200000.0",
-	}
+	m := make([]interface{}, 0, 4)
+
+	// Alguns itens
+	m1 := Estoque{"Ferrari-F200", "Vermelha", "2012", "100000.0"}
 	m = append(m, m1)
-	m1 = map[string]string{
-		"Carro": "Mustang GT",
-		"Cor":   "Preto",
-		"Ano":   "2012",
-		"Preço": "120000.0",
-	}
+
+	m1 = Estoque{"Mustang-GT", "Verde", "2012", "80000.0"}
 	m = append(m, m1)
-	m1 = map[string]string{
-		"Carro": "Golzinho",
-		"Cor":   "Preto",
-		"Ano":   "2015",
-		"Preço": "30000.0",
-	}
+
+	m1 = Estoque{"Golzinho", "Preta", "2015", "30000.0"}
 	m = append(m, m1)
-	m1 = map[string]string{
-		"Carro": "Fusca",
-		"Cor":   "Azul",
-		"Ano":   "1980",
-		"Preço": "10000.0",
-	}
+
+	m1 = Estoque{"Fusca", "Preta", "1979", "10000.0"}
 	m = append(m, m1)
 
 	db, err := sql.Open("mysql", OrigemDados("carbi"))
@@ -98,9 +91,15 @@ func TestInsereDado(t *testing.T) {
 	defer db.Close()
 
 	for _, j := range m {
-		err = InsereDado(db, "Estoque", j)
+		err = InsereDado(db, "Estoque", structToMap(j))
 		if err != nil {
 			panic(err)
 		}
 	}
+}
+
+func structToMap(s interface{}) (m map[string]string) {
+	j, _ := json.Marshal(s)
+	json.Unmarshal(j, &m)
+	return
 }

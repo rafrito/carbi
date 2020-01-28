@@ -20,6 +20,6 @@ func main() {
 	defer db.Close()
 
 	s := server{db: db}
-	http.HandleFunc("/", s.home)
+	http.HandleFunc("/", s.api)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

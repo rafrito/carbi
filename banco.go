@@ -14,6 +14,15 @@ import (
 // Pacote com funções úteis para a criação
 // e manipulação de banco de dados com mysql
 
+type Hist struct {
+	Carro    string
+	Cor      string
+	Operação string
+	Ano      string
+	IDCarro  string
+	Preço    string
+}
+
 // SenhaMYSQL pede a senha do servidor root mysql e
 // a armazena numa variavel de ambiente SMYSQL
 func SenhaMYSQL() {
@@ -133,4 +142,21 @@ func GetDados(db *sql.DB, tab string, c []string, cond []string) ([][]string, er
 		r = append(r, result)
 	}
 	return r, err
+}
+
+// AtualizaDado atualiza uma coluna identificada por id
+func AtualizaDado(db *sql.DB, id string, c []string, r []string) error {
+	s := "update Estoque\n"
+	aux := make([]string, 0, 10)
+	for i, col := range c {
+		aux = append(aux, col+" = "+`'`+r[i]+`'`)
+	}
+	s += "set " + strings.Join(aux, ", ") + "\n"
+	s += "where ID =" + id
+
+	_, err := db.Exec(s)
+	if err != nil {
+		return err
+	}
+	return nil
 }
