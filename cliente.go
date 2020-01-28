@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// funçãp auxiliar para desenvolvimento do programa
 func falta() {
 	fmt.Println("Ainda não programei essa parte!")
 }
@@ -74,6 +75,7 @@ func delete(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	switch len(tab) {
 	case 3:
 		err := DeletaCarro(db, tab[1])
+		err = Registra(db, "DELETE", r.URL.Path)
 		if err != nil {
 			badRequest(w)
 		} else {
@@ -93,6 +95,7 @@ func put(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		cols := strings.Split(tab[2], ",")
 		rows := strings.Split(tab[3], ",")
 		err := AtualizaDado(db, tab[1], cols, rows)
+		err = Registra(db, "PUT", r.URL.Path)
 		if err != nil {
 			badRequest(w)
 		} else {
@@ -116,6 +119,7 @@ func push(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			m[col] = data[i]
 		}
 		err := InsereDado(db, "Estoque", m)
+		err = Registra(db, "PUSH", r.URL.Path)
 		if err != nil {
 			badRequest(w)
 		} else {

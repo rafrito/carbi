@@ -3,10 +3,12 @@ package main
 import (
 	"bufio"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -16,12 +18,17 @@ import (
 
 // Hist representa a estrutura do banco de dados Histórico
 type Hist struct {
-	Carro    string
-	Cor      string
-	Operação string
-	Ano      string
-	IDCarro  string
-	Preço    string
+	DataOperação string
+	Operação     string
+	URL          string
+}
+
+// Estoque representa a estrutura do banco de dados Estoque
+type Estoque struct {
+	Carro string
+	Cor   string
+	Ano   string
+	Preço string
 }
 
 // SenhaMYSQL pede a senha do servidor root mysql e
@@ -160,4 +167,21 @@ func AtualizaDado(db *sql.DB, id string, c []string, r []string) error {
 		return err
 	}
 	return nil
+}
+
+// Registra registra as operações de mudança realizadas no Estoque
+func Registra(db *sql.DB, tipo string, u string) error {
+	t := time.Now()
+	reg := Hist{t.String(), tipo, u}
+
+	m := structToMap(reg)
+	err := InsereDado(db, "Histórico", m)
+
+	return err
+}
+
+func structToMap(s interface{}) (m map[string]string) {
+	j, _ := json.Marshal(s)
+	json.Unmarshal(j, &m)
+	return
 }

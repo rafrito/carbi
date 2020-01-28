@@ -2,19 +2,11 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
 	"os"
 	"testing"
 
 	_ "github.com/go-sql-driver/mysql"
 )
-
-type Estoque struct {
-	Carro string
-	Cor   string
-	Ano   string
-	Preço string
-}
 
 func TestCriaBanco(t *testing.T) {
 	os.Setenv("SMYSQL", "rafs1793")
@@ -56,20 +48,16 @@ func TestInsereColuna(t *testing.T) {
 	}
 
 	d2 := map[string]string{
-		"Carro":        "varchar(255)",
-		"Cor":          "varchar(255)",
-		"DataOperacao": "varchar(255)",
-		"Operacao":     "varchar(255)",
-		"Ano":          "int",
-		"IDCarro":      "int",
-		"Preço":        "float",
+		"DataOperação": "varchar(255)",
+		"Operação":     "varchar(255)",
+		"URL":          "varchar(255)",
 	}
 	InsereColuna(db, "Estoque", d1)
-	InsereColuna(db, "Historico", d2)
+	InsereColuna(db, "Histórico", d2)
 }
 
 func TestInsereDado(t *testing.T) {
-	m := make([]interface{}, 0, 4)
+	m := make([]interface{}, 0, 5)
 
 	// Alguns itens
 	m1 := Estoque{"Ferrari-F200", "Vermelha", "2012", "100000.0"}
@@ -84,6 +72,9 @@ func TestInsereDado(t *testing.T) {
 	m1 = Estoque{"Fusca", "Preta", "1979", "10000.0"}
 	m = append(m, m1)
 
+	m1 = Estoque{"Porsche-Cayenne", "Prata", "2018", "240000.0"}
+	m = append(m, m1)
+
 	db, err := sql.Open("mysql", OrigemDados("carbi"))
 	if err != nil {
 		t.Error(err)
@@ -96,10 +87,4 @@ func TestInsereDado(t *testing.T) {
 			panic(err)
 		}
 	}
-}
-
-func structToMap(s interface{}) (m map[string]string) {
-	j, _ := json.Marshal(s)
-	json.Unmarshal(j, &m)
-	return
 }
