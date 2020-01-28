@@ -14,6 +14,7 @@ import (
 // Pacote com funções úteis para a criação
 // e manipulação de banco de dados com mysql
 
+// Hist representa a estrutura do banco de dados Histórico
 type Hist struct {
 	Carro    string
 	Cor      string
